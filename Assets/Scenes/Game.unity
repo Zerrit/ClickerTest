@@ -638,7 +638,7 @@ MonoBehaviour:
   <LevelSlider>k__BackingField: {fileID: 1082074413}
   <LevelText>k__BackingField: {fileID: 1693008863}
   <ClickCount>k__BackingField: {fileID: 18857719}
-  <ClickZone>k__BackingField: {fileID: 718940838}
+  <PopupSpawnZone>k__BackingField: {fileID: 2064565655}
 --- !u!1 &1082074411
 GameObject:
   m_ObjectHideFlags: 0
@@ -1462,7 +1462,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1080, y: 1000}
+  m_SizeDelta: {x: 900, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2096585302
 GameObject:

@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace ClickerTest.MVP.Clicker.Model
@@ -11,6 +12,7 @@ namespace ClickerTest.MVP.Clicker.Model
         public event Action<int> OnPointsPerClickChanged;
         public event Action<int> OnLevelChanged;
         public event Action<int> OnLevelUpRequirementChanged;
+        public event Action<int> OnClicksBeforeLevelUpChanged;
 
         public bool DisplayingStatus { get; set; }
 
@@ -56,6 +58,9 @@ namespace ClickerTest.MVP.Clicker.Model
                 
                 OnLevelChanged?.Invoke(Level);
             }
+            
+            OnClickCountChanged?.Invoke(ClicksCount);
+            OnClicksBeforeLevelUpChanged?.Invoke(ClicksBeforeLevelUp);
         }
 
         /// <summary>

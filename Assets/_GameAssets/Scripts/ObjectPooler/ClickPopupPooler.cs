@@ -1,21 +1,20 @@
 using System.Collections.Generic;
 using System.Threading;
-using Clicker.MVP.Clicker.View;
+using ClickerTest.Factories;
+using ClickerTest.MVP.Clicker.View;
 using Cysharp.Threading.Tasks;
-using TMPro;
-using UnityEngine;
 
-namespace Clicker.ObjectPooler
+namespace ClickerTest.ObjectPooler
 {
     public class ClickPopupPooler
     {
         protected bool _autoExpend;
-        protected ClickPopup _prefab;
+        protected IClickPopupFactory _factory;
         protected List<ClickPopup> pool = new ();
 
-        public ClickPopupPooler(ClickPopup prefab, bool isAutoExpend = true)
+        public ClickPopupPooler(IClickPopupFactory factory, bool isAutoExpend = true)
         {
-            _prefab = prefab;
+            _factory = factory;
             _autoExpend = isAutoExpend;
         }
 
@@ -29,7 +28,7 @@ namespace Clicker.ObjectPooler
 
         public async UniTask<ClickPopup> CreateObjectAsync(CancellationToken token, bool isActiveByDefault = false)
         {
-            var createdObject = Object.Instantiate(_prefab);
+            var createdObject = await _factory.Create(token);
             
             createdObject.gameObject.SetActive(isActiveByDefault);
             pool.Add(createdObject);

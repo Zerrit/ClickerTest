@@ -1,30 +1,42 @@
-using Clicker.MVP.Clicker.Model;
-using Clicker.MVP.Clicker.View;
-using Clicker.ObjectPooler;
+using System.Threading;
+using ClickerTest.Factories;
+using ClickerTest.MVP.Clicker.Model;
+using ClickerTest.MVP.Clicker.View;
+using ClickerTest.ObjectPooler;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VContainer.Unity;
 
-namespace Clicker.MVP.Clicker.Presenter
+namespace ClickerTest.MVP.Clicker.Presenter
 {
-    public class ClickerPresenter : IStartable
+    public class ClickerPresenter : IAsyncStartable
     {
+        private ClickPopupPooler _pooler;
+        private CancellationTokenSource _cts;
+
         private readonly ClickerModel _model;
         private readonly ClickerView _view;
-        private ClickPopupPooler _pooler;
+        private readonly IClickPopupFactory _factory;
 
-        public ClickerPresenter(ClickerModel model, ClickerView view, ClickPopupPooler pooler)
+        public ClickerPresenter(ClickerModel model, ClickerView view, IClickPopupFactory factory)
         {
             _model = model;
             _view = view;
-            _pooler = pooler;
+            _factory = factory;
         }
 
-        public void Start()
+        public async UniTask StartAsync(CancellationToken cancellation)
         {
-            Initialize();
+            await InitializeAsync(cancellation);
         }
-        
-        public void Initialize()
+
+        private async UniTask InitializeAsync(CancellationToken token)
         {
+            _cts = new CancellationTokenSource();
+
+            _pooler = new ClickPopupPooler(_factory);
+            await _pooler.CreatePoolAsync(20, token);
+
             _model.OnDisplayingChanged += UpdateDisplaying;
             _view.OnClicked += ProcessClick;
         }
@@ -43,8 +55,20 @@ namespace Clicker.MVP.Clicker.Presenter
 
         private void ProcessClick()
         {
-            _view.SpawnClickPopup(_model.PointsPerClick);
+            SpawnClickPopupAsync(_model.PointsPerClick).Forget();
             _model.ConfirmClick();
+        }
+        
+        public async UniTaskVoid SpawnClickPopupAsync(int value)
+        {
+            var popup = await _pooler.GetFreeElementAsync(_cts.Token);
+
+            var randomX = Random.Range(0f, _view.PopupSpawnZoneSize.x);
+            var randomY = Random.Range(0f, _view.PopupSpawnZoneSize.y);
+
+            popup.transform.position = new Vector2(randomX, randomY);
+            
+            popup.Initialize(value);
         }
     }
 }

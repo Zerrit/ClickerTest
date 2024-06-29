@@ -4,15 +4,19 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Clicker.MVP.Clicker.View
+namespace ClickerTest.MVP.Clicker.View
 {
     public class ClickerView : MonoBehaviour, IPointerClickHandler
     {
         public event Action OnClicked;
-        
-        [SerializeField] private Slider _levelSlider;
-        [SerializeField] private TextMeshProUGUI _levelText;
-        
+
+        public Vector2 PopupSpawnZoneSize => PopupSpawnZone.sizeDelta;
+
+        [field:SerializeField] public Slider LevelSlider { get; private set; }
+        [field:SerializeField] public TextMeshProUGUI LevelText { get; private set; }
+        [field:SerializeField] public TextMeshProUGUI ClickCount { get; private set; }
+        [field:SerializeField] public RectTransform PopupSpawnZone { get; private set; }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             OnClicked?.Invoke();
@@ -24,11 +28,6 @@ namespace Clicker.MVP.Clicker.View
         }
 
         public void Close()
-        {
-            
-        }
-
-        public void SpawnClickPopup(int value)
         {
             
         }

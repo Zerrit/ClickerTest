@@ -1,21 +1,23 @@
 ﻿using System.Threading;
 using ClickerTest.MVP.Clicker.Model;
 using ClickerTest.MVP.Shop.Model;
+using ClickerTest.MVP.TabsPanel.Model;
 using ClickerTest.MVP.TabsPanel.View;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 using VContainer.Unity;
 
 namespace ClickerTest.MVP.TabsPanel.Presenter
 {
     public class TabsPresenter : IAsyncStartable
     {
-        private TabsView _view;
-        private ClickerModel _clickerModel;
-        private ShopModel _shopModel;
+        private readonly TabsModel _model;
+        private readonly TabsPanelView _view;
+        private readonly ClickerModel _clickerModel;
+        private readonly ShopModel _shopModel;
 
-        public TabsPresenter(TabsView view, ClickerModel clickerModel, ShopModel shopModel)
+        public TabsPresenter(TabsModel model, TabsPanelView view, ClickerModel clickerModel, ShopModel shopModel)
         {
+            _model = model;
             _view = view;
             _clickerModel = clickerModel;
             _shopModel = shopModel;
@@ -30,23 +32,14 @@ namespace ClickerTest.MVP.TabsPanel.Presenter
 
         private void Initialize()
         {
-            _view.ClickerTab.onClick.AddListener(OpenClickerWindow);
-            _view.ShopTab.onClick.AddListener(OpenShopWindow);
-        }
+            for (int i = 0; i < _view.Tabs.Length; i++)
+            {
+                _view.Tabs[i].Initialize(i);
 
-        private void OpenClickerWindow()
-        { 
-            Debug.Log("Клик");
-            _shopModel.ChangeDisplayingStatus(false);
-            _clickerModel.ChangeDisplayingStatus(true);
-        }
-        
-        private void OpenShopWindow()
-        {
-            Debug.Log("Клик");
-            _clickerModel.ChangeDisplayingStatus(false);
-            _shopModel.ChangeDisplayingStatus(true);
-
+                _view.Tabs[i].OnClicked += _model.SwitchTab;
+            }
+            
+            //_model.SwitchTab(2);
         }
     }
 }

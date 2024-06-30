@@ -1,62 +1,48 @@
-using System;
+using ClickerTest.MVP.ModelLogic;
+using ClickerTest.Tools.Reactivity;
 
 namespace ClickerTest.MVP.Clicker.Model
 {
-    public class ClickerModel
+    public class ClickerModel : IScreenModel
     {
-        public event Action<bool> OnDisplayingChanged;
+        public int ScreenId => 2;
+        
+        public SimpleReativeProperty<bool> DisplayingStatus { get; set; }
 
-        public event Action<int> OnClickCountChanged;
-        public event Action<int> OnPointsPerClickChanged;
-        public event Action<int> OnLevelChanged;
-        public event Action<int> OnLevelUpRequirementChanged;
-        public event Action<int> OnClicksBeforeLevelUpChanged;
+        public SimpleReativeProperty<int> Points { get; private set; }
+        public SimpleReativeProperty<int> ClicksCount { get; private set; }
+        public SimpleReativeProperty<int> PointsPerClick { get; private set; }
+        public SimpleReativeProperty<int> Level { get; private set; }
+        public SimpleReativeProperty<int> LevelUpRequirement { get; private set; }
+        public SimpleReativeProperty<int> ClicksBeforeLevelUp { get; private set; }
 
-        public bool DisplayingStatus { get; private set; }
-
-        public int Points { get; private set; }
-        public int ClicksCount { get; private set; }
-        public int PointsPerClick { get; private set; }
-        public int Level { get; private set; }
-        public int LevelUpRequirement { get; private set; }
-        public int ClicksBeforeLevelUp { get; private set; }
+        public float ProgressIndex => 1 - (float)ClicksBeforeLevelUp.Value / LevelUpRequirement.Value;
 
         public ClickerModel()
         {
             //TODO проверка сохранений
+            DisplayingStatus = new SimpleReativeProperty<bool>(false);
 
-            Points = 0;
-            ClicksCount = 0;
-            PointsPerClick = 1;
-            Level = 1;
-            LevelUpRequirement = 10;
-            ClicksBeforeLevelUp = LevelUpRequirement;
-        }
-
-        public void ChangeDisplayingStatus(bool status)
-        {
-            DisplayingStatus = status;
-
-            OnDisplayingChanged?.Invoke(status);
+            Points = new SimpleReativeProperty<int>(0);
+            ClicksCount = new SimpleReativeProperty<int>(0);
+            PointsPerClick = new SimpleReativeProperty<int>(1);
+            Level = new SimpleReativeProperty<int>(1);
+            LevelUpRequirement = new SimpleReativeProperty<int>(10);
+            ClicksBeforeLevelUp = new SimpleReativeProperty<int>(LevelUpRequirement.Value);
         }
 
         public void ConfirmClick()
         {
-            Points += PointsPerClick;
-            ClicksCount++;
-            ClicksBeforeLevelUp--;
+            Points.Value += PointsPerClick.Value;
+            ClicksCount.Value++;
+            ClicksBeforeLevelUp.Value--;
 
-            if (ClicksBeforeLevelUp == 0)
+            if (ClicksBeforeLevelUp.Value == 0)
             {
-                Level++;
-                LevelUpRequirement *= 2;
-                ClicksBeforeLevelUp = LevelUpRequirement;
-                
-                OnLevelChanged?.Invoke(Level);
+                Level.Value++;
+                LevelUpRequirement.Value *= 2;
+                ClicksBeforeLevelUp.Value = LevelUpRequirement.Value;
             }
-            
-            OnClickCountChanged?.Invoke(ClicksCount);
-            OnClicksBeforeLevelUpChanged?.Invoke(ClicksBeforeLevelUp);
         }
 
         /// <summary>
@@ -64,7 +50,18 @@ namespace ClickerTest.MVP.Clicker.Model
         /// </summary>
         public void UpgradePointsPerClick(int value)
         {
-            PointsPerClick += value;
+            PointsPerClick.Value += value;
+        }
+
+        public bool TrySpendPoints(int amount)
+        {
+            if (Points.Value >= amount)
+            {
+                Points.Value -= amount;
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using ClickerTest.Factories.UpgradeView;
 using ClickerTest.MVP.Shop.Model;
 using ClickerTest.MVP.Shop.View;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 using VContainer.Unity;
 using Object = UnityEngine.Object;
 
@@ -37,7 +35,7 @@ namespace ClickerTest.MVP.Shop.Presenter
             _upgradeViews = new();
             _cts = new CancellationTokenSource();
 
-            _model.OnDisplayingChanged += UpdateDisplaying;
+            _model.DisplayingStatus.OnChanged += UpdateDisplaying;
         }
 
         private void UpdateDisplaying(bool newStatus)
@@ -66,7 +64,8 @@ namespace ClickerTest.MVP.Shop.Presenter
             foreach (var upgrade in _model.Upgrades)
             {
                 var view = await _factory.Create(_view.ProductsParent, _cts.Token);
-
+                _upgradeViews.Add(view);
+                
                 view.UpgradeId = upgrade.Id;
                 view.Title.text = upgrade.Title;
                 view.OnClicked += ShowUpgradePopup;
@@ -91,8 +90,8 @@ namespace ClickerTest.MVP.Shop.Presenter
             async UniTask ShowUpgradePopupAsync(CancellationToken token)
             {
                 _view.UpgradePopup.Title.text = upgradeData.Title;
-                _view.UpgradePopup.Description.text = upgradeData.Bonus;
-                _view.UpgradePopup.Price.text = upgradeData.Price;
+                _view.UpgradePopup.Description.text = upgradeData.Bonus.ToString();
+                _view.UpgradePopup.Price.text = upgradeData.Price.ToString();
                 _view.UpgradePopup.BuyButton.onClick.AddListener(BuyUpgrade);
                 _view.UpgradePopup.CloseButton.onClick.AddListener(HideUpgradePopup);
                 

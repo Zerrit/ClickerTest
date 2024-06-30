@@ -5,9 +5,11 @@ using ClickerTest.Factories.UpgradeView;
 using ClickerTest.MVP.Clicker.Model;
 using ClickerTest.MVP.Clicker.Presenter;
 using ClickerTest.MVP.Clicker.View;
+using ClickerTest.MVP.ModelLogic;
 using ClickerTest.MVP.Shop.Model;
 using ClickerTest.MVP.Shop.Presenter;
 using ClickerTest.MVP.Shop.View;
+using ClickerTest.MVP.TabsPanel.Model;
 using ClickerTest.MVP.TabsPanel.Presenter;
 using ClickerTest.MVP.TabsPanel.View;
 using UnityEngine;
@@ -25,7 +27,7 @@ namespace ClickerTest.Architecture
         [SerializeField] private AssetReference _clickPopupPrefab;
         [SerializeField] private AssetReference _upgradeViewPrefab;
 
-        [SerializeField] private TabsView _tabsView;
+        [SerializeField] private TabsPanelView _tabsView;
         [SerializeField] private ClickerView _clickerView;
         [SerializeField] private ShopView _shopView;
 
@@ -45,8 +47,9 @@ namespace ClickerTest.Architecture
         
         private void RegisterModels(IContainerBuilder builder)
         {
-            builder.Register<ClickerModel>(Lifetime.Singleton);
-            builder.Register<ShopModel>(Lifetime.Singleton);
+            builder.Register<IScreenModel, ClickerModel>(Lifetime.Scoped).AsSelf();
+            builder.Register<IScreenModel, ShopModel>(Lifetime.Scoped).AsSelf();
+            builder.Register<TabsModel>(Lifetime.Singleton);
         }
 
         private void RegisterViews(IContainerBuilder builder)

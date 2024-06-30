@@ -2,7 +2,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace Clicker.MVP.Clicker.View
+namespace ClickerTest.MVP.Clicker.View
 {
     public class ClickPopup : MonoBehaviour
     {
@@ -11,9 +11,10 @@ namespace Clicker.MVP.Clicker.View
         public void Initialize(int value)
         {
             _text.text = value.ToString();
+            _text.alpha = 1;
 
             _text.DOFade(0f, 0.5f).SetDelay(0.5f);
-            transform.DOMove(transform.position + new Vector3(0, 2, 0), 1).OnComplete(() =>
+            transform.DOMove(transform.position + new Vector3(0, 50, 0), 1).OnComplete(() =>
             {
                 gameObject.SetActive(false);
             });

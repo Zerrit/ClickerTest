@@ -10,7 +10,7 @@ namespace ClickerTest.MVP.Clicker.View
 
         public void Initialize(int value)
         {
-            _text.text = value.ToString();
+            _text.text = $"+{value}";
             _text.alpha = 1;
 
             _text.DOFade(0f, 0.5f).SetDelay(0.5f);

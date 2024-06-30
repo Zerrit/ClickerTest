@@ -1,5 +1,6 @@
 using ClickerTest.MVP.ModelLogic;
 using ClickerTest.Tools.Reactivity;
+using UnityEngine;
 
 namespace ClickerTest.MVP.Clicker.Model
 {
@@ -35,13 +36,16 @@ namespace ClickerTest.MVP.Clicker.Model
         {
             Points.Value += PointsPerClick.Value;
             ClicksCount.Value++;
-            ClicksBeforeLevelUp.Value--;
+            ClicksBeforeLevelUp.Value -= PointsPerClick.Value;
 
-            if (ClicksBeforeLevelUp.Value == 0)
+            if (ClicksBeforeLevelUp.Value <= 0)
             {
                 Level.Value++;
                 LevelUpRequirement.Value *= 2;
+
+                var overPoints = Mathf.Abs(ClicksBeforeLevelUp.Value);
                 ClicksBeforeLevelUp.Value = LevelUpRequirement.Value;
+                ClicksBeforeLevelUp.Value -= overPoints;
             }
         }
 
@@ -53,7 +57,18 @@ namespace ClickerTest.MVP.Clicker.Model
             PointsPerClick.Value += value;
         }
 
-        public bool TrySpendPoints(int amount)
+        public bool TryUpgradePointPerClick(int price, int bonus)
+        {
+            if (TrySpendPoints(price))
+            {
+                PointsPerClick.Value += bonus;
+                return true;
+            }
+
+            return false;
+        }
+        
+        private bool TrySpendPoints(int amount)
         {
             if (Points.Value >= amount)
             {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
+using ClickerTest.Configs;
 using ClickerTest.Factories.UpgradeView;
 using ClickerTest.MVP.Shop.Model;
 using ClickerTest.MVP.Shop.View;
@@ -11,6 +12,8 @@ namespace ClickerTest.MVP.Shop.Presenter
 {
     public class ShopPresenter : IAsyncStartable
     {
+        private UpgradeConfig _selectedUpgrade;
+
         private List<UpgradeView> _upgradeViews;
         private CancellationTokenSource _cts;
         
@@ -84,14 +87,15 @@ namespace ClickerTest.MVP.Shop.Presenter
 
         private void ShowUpgradePopup(int id)
         {
-            var upgradeData = _model.Upgrades[id];
+            _selectedUpgrade = _model.Upgrades[id];
             ShowUpgradePopupAsync(_cts.Token).Forget();
             
             async UniTask ShowUpgradePopupAsync(CancellationToken token)
             {
-                _view.UpgradePopup.Title.text = upgradeData.Title;
-                _view.UpgradePopup.Description.text = upgradeData.Bonus.ToString();
-                _view.UpgradePopup.Price.text = upgradeData.Price.ToString();
+                _view.UpgradePopup.Title.text = _selectedUpgrade.Title;
+                _view.UpgradePopup.Description.text = $"Увеличьте доход за клик на {_selectedUpgrade.Bonus.ToString()}";
+                _view.UpgradePopup.Price.text = _selectedUpgrade.Price.ToString();
+
                 _view.UpgradePopup.BuyButton.onClick.AddListener(BuyUpgrade);
                 _view.UpgradePopup.CloseButton.onClick.AddListener(HideUpgradePopup);
                 
@@ -106,7 +110,10 @@ namespace ClickerTest.MVP.Shop.Presenter
 
         private void BuyUpgrade()
         {
-            
+            if (_model.TryBuyUpgrade(_selectedUpgrade.Id))
+            {
+                HideUpgradePopup();
+            }
         }
     }
 }

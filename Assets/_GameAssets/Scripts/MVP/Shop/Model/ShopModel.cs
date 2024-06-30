@@ -30,7 +30,7 @@ namespace ClickerTest.MVP.Shop.Model
 
         public bool TryBuyUpgrade(int id)
         {
-            if (_clickerModel.TrySpendPoints(Upgrades[id].Price))
+            if (_clickerModel.TryUpgradePointPerClick(Upgrades[id].Price, Upgrades[id].Bonus))
             {
                 OnUpgradePurchaised?.Invoke(id);
                 return true;

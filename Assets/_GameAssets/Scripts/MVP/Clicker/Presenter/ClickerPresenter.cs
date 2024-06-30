@@ -76,7 +76,7 @@ namespace ClickerTest.MVP.Clicker.Presenter
         
         private void UpdateLevelText(int level)
         {
-            _view.LevelText.text = $"Level {_model.Level}";
+            _view.LevelText.text = $"Level {_model.Level.Value}";
         }
         
         private void UpdateProgressBar(int value)

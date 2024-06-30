@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading;
-using ClickerTest.MVP.Clicker.View;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace ClickerTest.Factories
+namespace ClickerTest.Factories.ClickPopup
 {
     public class ClickPopupFactory : IDisposable, IClickPopupFactory
     {
@@ -21,12 +20,12 @@ namespace ClickerTest.Factories
             _parentContainer = parentContainer;
         }
 
-        public async UniTask<ClickPopup> Create(CancellationToken token)
+        public async UniTask<MVP.Clicker.View.ClickPopup> Create(CancellationToken token)
         {
             _popupOperationHandle = Addressables.InstantiateAsync(_prefab, _parentContainer);
             var cell = await _popupOperationHandle.WithCancellation(token);
 
-            return cell.GetComponent<ClickPopup>();
+            return cell.GetComponent<MVP.Clicker.View.ClickPopup>();
         }
 
         public void Dispose()

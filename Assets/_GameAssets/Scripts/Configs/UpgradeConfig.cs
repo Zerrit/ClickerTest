@@ -1,21 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace ClickerTest
+namespace ClickerTest.Configs
 {
-    public class UpgradeConfig : MonoBehaviour
+    [CreateAssetMenu(menuName = "Upgrades/New Upgrade", fileName = "NewUpgrade")]
+    public class UpgradeConfig : ScriptableObject
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+        [field:SerializeField] public int Id { get; private set; }
+        [field:SerializeField] public string Title { get; private set; }
+        [field:SerializeField] public string Price { get; private set; }
+        [field:SerializeField] public string Bonus { get; private set; }
     }
 }

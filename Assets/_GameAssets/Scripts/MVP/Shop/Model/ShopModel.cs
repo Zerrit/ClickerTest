@@ -1,21 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
+using ClickerTest.Configs;
+using ClickerTest.MVP.Clicker.Model;
 
-namespace ClickerTest
+namespace ClickerTest.MVP.Shop.Model
 {
-    public class ShopModel : MonoBehaviour
+    public class ShopModel
     {
-        // Start is called before the first frame update
-        void Start()
-        {
+        public bool IsInitialized { get; private set; }
+
+        public event Action<bool> OnDisplayingChanged;
+
+        public bool DisplayingStatus { get; private set; }
         
+        public UpgradeConfig[] Upgrades { get; private set; }
+
+        private readonly ClickerModel _clickerModel;
+        private readonly UpgradeListConfig _config;
+
+        public ShopModel(ClickerModel clickerModel, UpgradeListConfig config)
+        {
+            _clickerModel = clickerModel;
+            _config = config;
+
+            Initialize();
         }
 
-        // Update is called once per frame
-        void Update()
+        private void Initialize()
         {
-        
+            Upgrades = _config.Upgrades;
+        }
+
+        public void ChangeDisplayingStatus(bool status)
+        {
+            DisplayingStatus = status;
+
+            OnDisplayingChanged?.Invoke(status);
+        }
+
+        public bool TryBuyUpgrade(int id)
+        {
+            return false;
         }
     }
 }

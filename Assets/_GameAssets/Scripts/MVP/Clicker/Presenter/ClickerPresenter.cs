@@ -1,5 +1,6 @@
 using System.Threading;
 using ClickerTest.Factories;
+using ClickerTest.Factories.ClickPopup;
 using ClickerTest.MVP.Clicker.Model;
 using ClickerTest.MVP.Clicker.View;
 using ClickerTest.ObjectPooler;

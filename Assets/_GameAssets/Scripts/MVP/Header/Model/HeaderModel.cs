@@ -1,4 +1,5 @@
-﻿using ClickerTest.Tools.Reactivity;
+﻿using ClickerTest.Data;
+using ClickerTest.Tools.Reactivity;
 using UnityEngine;
 
 namespace ClickerTest.MVP.Header.Model
@@ -6,11 +7,16 @@ namespace ClickerTest.MVP.Header.Model
     public class HeaderModel
     {
         public SimpleReativeProperty<int> Points { get; }
-        //TODO Другие типы ресурсов.
 
-        public HeaderModel()
+        private readonly IPersistentDataService _dataService;
+
+        public HeaderModel(IPersistentDataService dataService)
         {
-            Points = new SimpleReativeProperty<int>(0);
+            _dataService = dataService;
+
+            Points = new SimpleReativeProperty<int>(_dataService.Progress.Points);
+
+            _dataService.OnNeedSaving += SaveData;
         }
 
         public bool TrySpendPoints(int amount)
@@ -24,6 +30,12 @@ namespace ClickerTest.MVP.Header.Model
                 return true;
             }
             return false;
+        }
+        
+        public void SaveData()
+        {
+            _dataService.Progress.Points = Points.Value;
+
         }
     }
 }

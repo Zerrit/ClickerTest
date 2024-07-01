@@ -1,7 +1,8 @@
 ﻿using ClickerTest.Configs;
+using ClickerTest.Data;
 using ClickerTest.Factories;
 using ClickerTest.Factories.ClickPopup;
-using ClickerTest.Factories.UpgradeView;
+using ClickerTest.Factories.Upgrades;
 using ClickerTest.MVP.Clicker.Model;
 using ClickerTest.MVP.Clicker.Presenter;
 using ClickerTest.MVP.Clicker.View;
@@ -25,7 +26,7 @@ namespace ClickerTest.Architecture
     public class GameScope : LifetimeScope
     {
         [SerializeField] private UpgradeListConfig _upgradeListConfig;
-        
+
         [SerializeField] private Transform _clickPopupContainer;
         [SerializeField] private AssetReference _clickPopupPrefab;
         [SerializeField] private AssetReference _upgradeViewPrefab;
@@ -37,6 +38,7 @@ namespace ClickerTest.Architecture
 
         protected override void Configure(IContainerBuilder builder)
         {
+            Debug.Log("sdgbedrbr");
             RegisterConfigs(builder);
             RegisterFactories(builder);
 
@@ -53,8 +55,8 @@ namespace ClickerTest.Architecture
         private void RegisterModels(IContainerBuilder builder)
         {
             builder.Register<HeaderModel>(Lifetime.Singleton);
-            builder.Register<IScreenModel, ClickerModel>(Lifetime.Scoped).AsSelf();
-            builder.Register<IScreenModel, ShopModel>(Lifetime.Scoped).AsSelf();
+            builder.Register<ClickerModel>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
+            builder.Register<ShopModel>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
             builder.Register<TabsModel>(Lifetime.Singleton);
         }
 

@@ -39,6 +39,7 @@ namespace ClickerTest.MVP.Clicker.Presenter
             
             _view.LevelSlider.value = _model.ProgressIndex;
             _view.LevelText.text = $"Level {_model.Level.Value}";
+            _view.ClickCount.text = _model.ClicksCount.Value.ToString();
 
             _model.DisplayingStatus.OnChanged += UpdateDisplaying;
             _model.ClicksCount.OnChanged += UpdateClickCountText;

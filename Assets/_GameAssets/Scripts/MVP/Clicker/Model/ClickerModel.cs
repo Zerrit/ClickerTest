@@ -1,3 +1,4 @@
+using ClickerTest.Data;
 using ClickerTest.MVP.Header.Model;
 using ClickerTest.Tools.Reactivity;
 using ClickerTest.UI;
@@ -13,7 +14,6 @@ namespace ClickerTest.MVP.Clicker.Model
 
         public float ProgressIndex => 1 - (float)ClicksBeforeLevelUp.Value / LevelUpRequirement.Value;
 
-        //public SimpleReativeProperty<int> Points { get; private set; }
         public SimpleReativeProperty<int> ClicksCount { get; }
         public SimpleReativeProperty<int> PointsPerClick { get; }
         public SimpleReativeProperty<int> Level { get; }
@@ -21,19 +21,24 @@ namespace ClickerTest.MVP.Clicker.Model
         public SimpleReativeProperty<int> ClicksBeforeLevelUp { get; }
 
         private readonly HeaderModel _resourcesModel;
+        private readonly IPersistentDataService _dataService;
         
-        public ClickerModel(HeaderModel headerModel)
+        public ClickerModel(HeaderModel headerModel, IPersistentDataService dataService)
         {
             _resourcesModel = headerModel;
+            _dataService = dataService;
 
-            //TODO проверка сохранений
+            var data = _dataService.Progress;
+            
             DisplayingStatus = new SimpleReativeProperty<bool>(false);
 
-            ClicksCount = new SimpleReativeProperty<int>(0);
-            PointsPerClick = new SimpleReativeProperty<int>(1);
-            Level = new SimpleReativeProperty<int>(1);
-            LevelUpRequirement = new SimpleReativeProperty<int>(10);
-            ClicksBeforeLevelUp = new SimpleReativeProperty<int>(LevelUpRequirement.Value);
+            ClicksCount = new SimpleReativeProperty<int>(data.ClickCount);
+            PointsPerClick = new SimpleReativeProperty<int>(data.PointsPerClick);
+            Level = new SimpleReativeProperty<int>(data.Level);
+            LevelUpRequirement = new SimpleReativeProperty<int>(data.LevelUpRequirement);
+            ClicksBeforeLevelUp = new SimpleReativeProperty<int>(data.ClicksBeforeLevelUp);
+
+            _dataService.OnNeedSaving += SaveData;
         }
 
         public void ConfirmClick()
@@ -71,6 +76,15 @@ namespace ClickerTest.MVP.Clicker.Model
             }
 
             return false;
+        }
+
+        public void SaveData()
+        {
+            _dataService.Progress.Level = Level.Value;
+            _dataService.Progress.ClickCount = ClicksCount.Value;
+            _dataService.Progress.PointsPerClick = PointsPerClick.Value;
+            _dataService.Progress.LevelUpRequirement = LevelUpRequirement.Value;
+            _dataService.Progress.ClicksBeforeLevelUp = ClicksBeforeLevelUp.Value;
         }
     }
 }

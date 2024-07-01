@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading;
+using ClickerTest.MVP.Shop.View;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace ClickerTest.Factories.UpgradeView
+namespace ClickerTest.Factories.Upgrades
 {
     public class UpgradeViewFactory : IUpgradeViewFactory, IDisposable
     {
@@ -18,17 +19,20 @@ namespace ClickerTest.Factories.UpgradeView
             _prefab = prefab;
         }
 
-        public async UniTask<MVP.Shop.View.UpgradeView> Create(Transform parent, CancellationToken token)
+        public async UniTask<UpgradeView> Create(Transform parent, CancellationToken token)
         {
             _upgradeViewOperationHandle = Addressables.InstantiateAsync(_prefab, parent);
             var cell = await _upgradeViewOperationHandle.WithCancellation(token);
 
-            return cell.GetComponent<MVP.Shop.View.UpgradeView>();
+            return cell.GetComponent<UpgradeView>();
         }
 
         public void Dispose()
         {
-            Addressables.Release(_upgradeViewOperationHandle);
+            if (_upgradeViewOperationHandle.IsValid())
+            {
+                Addressables.Release(_upgradeViewOperationHandle);
+            }
         }
     }
 }

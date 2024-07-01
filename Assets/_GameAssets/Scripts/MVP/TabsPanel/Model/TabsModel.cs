@@ -7,7 +7,7 @@ namespace ClickerTest.MVP.TabsPanel.Model
 {
     public class TabsModel
     {
-        public SimpleReativeProperty<bool> IsInitialized { get; private set; }
+        public SimpleReativeProperty<bool> IsInitialized { get; }
 
         public int ActiveTabIndex { get; private set; } = -1;
         private readonly Dictionary<int, IScreenModel> _tabModels = new ();
@@ -15,7 +15,7 @@ namespace ClickerTest.MVP.TabsPanel.Model
         public TabsModel(IEnumerable<IScreenModel> tabModels)
         {
             IsInitialized = new SimpleReativeProperty<bool>(false);
-            
+            Debug.Log(tabModels);
             foreach (var model in tabModels)
             {
                 _tabModels[model.ScreenId] = model;

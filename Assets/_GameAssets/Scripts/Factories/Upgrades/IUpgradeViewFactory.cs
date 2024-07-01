@@ -2,7 +2,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace ClickerTest.Factories.UpgradeView
+namespace ClickerTest.Factories.Upgrades
 {
     public interface IUpgradeViewFactory
     {

@@ -638,7 +638,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: 
+    TypeName: ClickerTest.Architecture.ProjectScope
   autoRun: 1
   autoInjectGameObjects: []
   _upgradeListConfig: {fileID: 11400000, guid: ab4fee87954ba7648bb0675179462151, type: 2}

@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClickerTest.Configs;
+using ClickerTest.Data;
 using ClickerTest.MVP.Clicker.Model;
 using ClickerTest.Tools.Reactivity;
 using ClickerTest.UI;
+using UnityEngine;
 
 namespace ClickerTest.MVP.Shop.Model
 {
@@ -17,13 +19,23 @@ namespace ClickerTest.MVP.Shop.Model
         public Dictionary<int, UpgradeConfig> AvailableUpgrades { get; }
 
         private readonly ClickerModel _clickerModel;
+        private readonly IPersistentDataService _dataService;
 
-        public ShopModel(ClickerModel clickerModel, UpgradeListConfig config)
+        public ShopModel(ClickerModel clickerModel, UpgradeListConfig config, IPersistentDataService dataService)
         {
             _clickerModel = clickerModel;
-
+            _dataService = dataService;
+            
             DisplayingStatus = new SimpleReativeProperty<bool>(false);
-            AvailableUpgrades = config.Upgrades.ToDictionary(x => x.Id, x => x);
+            AvailableUpgrades = new Dictionary<int, UpgradeConfig>();
+
+            foreach (var upgrade in config.Upgrades)
+            {
+                if (!_dataService.Progress.PurchaisedUpgrades.Contains(upgrade.Id))
+                {
+                    AvailableUpgrades[upgrade.Id] = upgrade;
+                }
+            }
         }
 
         public bool TryBuyUpgrade(int upgradeId)
@@ -35,8 +47,8 @@ namespace ClickerTest.MVP.Shop.Model
             
             if (_clickerModel.TryUpgradePointPerClick(AvailableUpgrades[upgradeId].Price, AvailableUpgrades[upgradeId].Bonus))
             {
+                _dataService.Progress.PurchaisedUpgrades.Add(upgradeId);
                 AvailableUpgrades.Remove(upgradeId);
-
                 return true;
             }
 

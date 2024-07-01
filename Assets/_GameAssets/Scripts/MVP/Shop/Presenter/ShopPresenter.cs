@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using ClickerTest.Factories.UpgradeView;
+using ClickerTest.Factories.Upgrades;
 using ClickerTest.MVP.Shop.Model;
 using ClickerTest.MVP.Shop.View;
 using Cysharp.Threading.Tasks;

@@ -653,7 +653,7 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  _headerView: {fileID: 0}
+  _headerView: {fileID: 442599184}
   _tabsView: {fileID: 2096585306}
   _clickerView: {fileID: 734518418}
   _shopView: {fileID: 1869108639}

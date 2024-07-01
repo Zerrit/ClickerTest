@@ -7,7 +7,7 @@ namespace ClickerTest.MVP.Shop.View
 {
     public class UpgradeView : MonoBehaviour, IPointerClickHandler
     {
-        public event Action<int> OnClicked;
+        public event Action<UpgradeView> OnClicked;
         
         public int UpgradeId { get; set; }
         
@@ -15,7 +15,7 @@ namespace ClickerTest.MVP.Shop.View
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            OnClicked?.Invoke(UpgradeId);
+            OnClicked?.Invoke(this);
         }
     }
 }

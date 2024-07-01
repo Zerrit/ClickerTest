@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using ClickerTest.Configs;
 using ClickerTest.Factories.UpgradeView;
 using ClickerTest.MVP.Shop.Model;
 using ClickerTest.MVP.Shop.View;
@@ -13,7 +12,7 @@ namespace ClickerTest.MVP.Shop.Presenter
 {
     public class ShopPresenter : IAsyncStartable, IDisposable
     {
-        private UpgradeConfig _selectedUpgrade;
+        private UpgradeView _selectedUpgradeView;
 
         private List<UpgradeView> _upgradeViews;
         private CancellationTokenSource _cts;
@@ -67,13 +66,14 @@ namespace ClickerTest.MVP.Shop.Presenter
         {
             CleareUpgradeViews();
 
-            foreach (var upgrade in _model.Upgrades)
+            foreach (var upgrade in _model.AvailableUpgrades.Values)
             {
                 var view = await _factory.Create(_view.ProductsParent, _cts.Token);
                 _upgradeViews.Add(view);
                 
                 view.UpgradeId = upgrade.Id;
                 view.Title.text = upgrade.Title;
+
                 view.OnClicked += ShowUpgradePopup;
             }
         }
@@ -88,16 +88,17 @@ namespace ClickerTest.MVP.Shop.Presenter
             _upgradeViews.Clear();
         }
 
-        private void ShowUpgradePopup(int id)
+        private void ShowUpgradePopup(UpgradeView view)
         {
-            _selectedUpgrade = _model.Upgrades[id];
+            _selectedUpgradeView = view;
+            var data = _model.AvailableUpgrades[_selectedUpgradeView.UpgradeId];
             ShowUpgradePopupAsync(_cts.Token).Forget();
             
             async UniTask ShowUpgradePopupAsync(CancellationToken token)
             {
-                _view.UpgradePopup.Title.text = _selectedUpgrade.Title;
-                _view.UpgradePopup.Description.text = $"Увеличьте доход за клик на {_selectedUpgrade.Bonus.ToString()}";
-                _view.UpgradePopup.Price.text = _selectedUpgrade.Price.ToString();
+                _view.UpgradePopup.Title.text = data.Title;
+                _view.UpgradePopup.Description.text = $"Увеличьте доход за клик на {data.Bonus.ToString()}";
+                _view.UpgradePopup.Price.text = data.Price.ToString();
 
                 await _view.UpgradePopup.ShowAsync(token);
             }
@@ -110,10 +111,17 @@ namespace ClickerTest.MVP.Shop.Presenter
 
         private void BuyUpgrade()
         {
-            if (_model.TryBuyUpgrade(_selectedUpgrade.Id))
+            if (_model.TryBuyUpgrade(_selectedUpgradeView.UpgradeId))
             {
+                RemoveUpgrade(_selectedUpgradeView);
                 HideUpgradePopup();
             }
+        }
+
+        private void RemoveUpgrade(UpgradeView upgrade)
+        {
+            _upgradeViews.Remove(upgrade);
+            Object.Destroy(upgrade.gameObject);
         }
 
         public void Dispose()

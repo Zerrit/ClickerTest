@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using ClickerTest.Configs;
 using ClickerTest.MVP.Clicker.Model;
 using ClickerTest.Tools.Reactivity;
@@ -10,29 +12,31 @@ namespace ClickerTest.MVP.Shop.Model
     {
         public int ScreenId => 1;
 
-        public event Action<int> OnUpgradePurchaised;
-        
         public SimpleReativeProperty<bool> DisplayingStatus { get; set; }
 
-        public UpgradeConfig[] Upgrades { get; private set; }
+        public Dictionary<int, UpgradeConfig> AvailableUpgrades { get; }
 
         private readonly ClickerModel _clickerModel;
-        private readonly UpgradeListConfig _config;
 
         public ShopModel(ClickerModel clickerModel, UpgradeListConfig config)
         {
             _clickerModel = clickerModel;
-            _config = config;
 
             DisplayingStatus = new SimpleReativeProperty<bool>(false);
-            Upgrades = _config.Upgrades;
+            AvailableUpgrades = config.Upgrades.ToDictionary(x => x.Id, x => x);
         }
 
         public bool TryBuyUpgrade(int upgradeId)
         {
-            if (_clickerModel.TryUpgradePointPerClick(Upgrades[upgradeId].Price, Upgrades[upgradeId].Bonus))
+            if (!AvailableUpgrades.ContainsKey(upgradeId))
             {
-                OnUpgradePurchaised?.Invoke(upgradeId);
+                throw new Exception($"Попытка приобрести усиление с неопознанным Id:{upgradeId}");
+            }
+            
+            if (_clickerModel.TryUpgradePointPerClick(AvailableUpgrades[upgradeId].Price, AvailableUpgrades[upgradeId].Bonus))
+            {
+                AvailableUpgrades.Remove(upgradeId);
+
                 return true;
             }
 

@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace ClickerTest.ViewLogic
+namespace ClickerTest.UI
 {
     public class BaseScreen : MonoBehaviour
     {

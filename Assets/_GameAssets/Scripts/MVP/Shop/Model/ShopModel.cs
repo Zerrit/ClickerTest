@@ -1,8 +1,8 @@
 using System;
 using ClickerTest.Configs;
 using ClickerTest.MVP.Clicker.Model;
-using ClickerTest.MVP.ModelLogic;
 using ClickerTest.Tools.Reactivity;
+using ClickerTest.UI;
 
 namespace ClickerTest.MVP.Shop.Model
 {
@@ -23,16 +23,16 @@ namespace ClickerTest.MVP.Shop.Model
         {
             _clickerModel = clickerModel;
             _config = config;
-            
+
             DisplayingStatus = new SimpleReativeProperty<bool>(false);
             Upgrades = _config.Upgrades;
         }
 
-        public bool TryBuyUpgrade(int id)
+        public bool TryBuyUpgrade(int upgradeId)
         {
-            if (_clickerModel.TryUpgradePointPerClick(Upgrades[id].Price, Upgrades[id].Bonus))
+            if (_clickerModel.TryUpgradePointPerClick(Upgrades[upgradeId].Price, Upgrades[upgradeId].Bonus))
             {
-                OnUpgradePurchaised?.Invoke(id);
+                OnUpgradePurchaised?.Invoke(upgradeId);
                 return true;
             }
 

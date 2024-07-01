@@ -1,6 +1,6 @@
 ﻿using ClickerTest.Tools.Reactivity;
 
-namespace ClickerTest.MVP.ModelLogic
+namespace ClickerTest.UI
 {
     public interface IScreenModel
     {

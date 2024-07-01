@@ -5,13 +5,16 @@ using ClickerTest.Factories.UpgradeView;
 using ClickerTest.MVP.Clicker.Model;
 using ClickerTest.MVP.Clicker.Presenter;
 using ClickerTest.MVP.Clicker.View;
-using ClickerTest.MVP.ModelLogic;
+using ClickerTest.MVP.Header.Model;
+using ClickerTest.MVP.Header.Presenter;
+using ClickerTest.MVP.Header.View;
 using ClickerTest.MVP.Shop.Model;
 using ClickerTest.MVP.Shop.Presenter;
 using ClickerTest.MVP.Shop.View;
 using ClickerTest.MVP.TabsPanel.Model;
 using ClickerTest.MVP.TabsPanel.Presenter;
 using ClickerTest.MVP.TabsPanel.View;
+using ClickerTest.UI;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using VContainer;
@@ -27,6 +30,7 @@ namespace ClickerTest.Architecture
         [SerializeField] private AssetReference _clickPopupPrefab;
         [SerializeField] private AssetReference _upgradeViewPrefab;
 
+        [SerializeField] private HeaderView _headerView;
         [SerializeField] private TabsPanelView _tabsView;
         [SerializeField] private ClickerView _clickerView;
         [SerializeField] private ShopView _shopView;
@@ -35,6 +39,7 @@ namespace ClickerTest.Architecture
         {
             RegisterConfigs(builder);
             RegisterFactories(builder);
+
             RegisterModels(builder);
             RegisterViews(builder);
             RegisterPresenters(builder);
@@ -47,6 +52,7 @@ namespace ClickerTest.Architecture
         
         private void RegisterModels(IContainerBuilder builder)
         {
+            builder.Register<HeaderModel>(Lifetime.Singleton);
             builder.Register<IScreenModel, ClickerModel>(Lifetime.Scoped).AsSelf();
             builder.Register<IScreenModel, ShopModel>(Lifetime.Scoped).AsSelf();
             builder.Register<TabsModel>(Lifetime.Singleton);
@@ -54,6 +60,7 @@ namespace ClickerTest.Architecture
 
         private void RegisterViews(IContainerBuilder builder)
         {
+            builder.RegisterInstance(_headerView);
             builder.RegisterInstance(_tabsView);
             builder.RegisterInstance(_clickerView);
             builder.RegisterInstance(_shopView);
@@ -61,6 +68,7 @@ namespace ClickerTest.Architecture
 
         private void RegisterPresenters(IContainerBuilder builder)
         {
+            builder.RegisterEntryPoint<HeaderPresenter>();
             builder.RegisterEntryPoint<TabsPresenter>();
             builder.RegisterEntryPoint<ClickerPresenter>();
             builder.RegisterEntryPoint<ShopPresenter>();

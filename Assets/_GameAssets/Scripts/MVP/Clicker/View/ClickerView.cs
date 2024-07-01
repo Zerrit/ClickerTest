@@ -1,5 +1,5 @@
 using System;
-using ClickerTest.ViewLogic;
+using ClickerTest.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

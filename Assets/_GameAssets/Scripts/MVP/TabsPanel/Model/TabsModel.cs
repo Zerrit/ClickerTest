@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using ClickerTest.MVP.ModelLogic;
 using ClickerTest.Tools.Reactivity;
+using ClickerTest.UI;
 using UnityEngine;
 
 namespace ClickerTest.MVP.TabsPanel.Model

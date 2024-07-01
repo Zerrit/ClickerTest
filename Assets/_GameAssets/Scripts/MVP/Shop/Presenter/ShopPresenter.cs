@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using ClickerTest.Configs;
@@ -10,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace ClickerTest.MVP.Shop.Presenter
 {
-    public class ShopPresenter : IAsyncStartable
+    public class ShopPresenter : IAsyncStartable, IDisposable
     {
         private UpgradeConfig _selectedUpgrade;
 
@@ -39,6 +40,8 @@ namespace ClickerTest.MVP.Shop.Presenter
             _cts = new CancellationTokenSource();
 
             _model.DisplayingStatus.OnChanged += UpdateDisplaying;
+            _view.UpgradePopup.BuyButton.onClick.AddListener(BuyUpgrade);
+            _view.UpgradePopup.CloseButton.onClick.AddListener(HideUpgradePopup);
         }
 
         private void UpdateDisplaying(bool newStatus)
@@ -96,9 +99,6 @@ namespace ClickerTest.MVP.Shop.Presenter
                 _view.UpgradePopup.Description.text = $"Увеличьте доход за клик на {_selectedUpgrade.Bonus.ToString()}";
                 _view.UpgradePopup.Price.text = _selectedUpgrade.Price.ToString();
 
-                _view.UpgradePopup.BuyButton.onClick.AddListener(BuyUpgrade);
-                _view.UpgradePopup.CloseButton.onClick.AddListener(HideUpgradePopup);
-                
                 await _view.UpgradePopup.ShowAsync(token);
             }
         }
@@ -114,6 +114,13 @@ namespace ClickerTest.MVP.Shop.Presenter
             {
                 HideUpgradePopup();
             }
+        }
+
+        public void Dispose()
+        {
+            _model.DisplayingStatus.OnChanged -= UpdateDisplaying;
+            
+            _cts?.Dispose();
         }
     }
 }

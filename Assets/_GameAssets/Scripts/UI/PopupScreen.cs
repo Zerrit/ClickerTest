@@ -4,7 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ClickerTest.ViewLogic
+namespace ClickerTest.UI
 {
     public class PopupScreen : MonoBehaviour
     {

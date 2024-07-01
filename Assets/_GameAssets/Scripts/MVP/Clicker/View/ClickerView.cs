@@ -1,4 +1,5 @@
 using System;
+using ClickerTest.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 namespace ClickerTest.MVP.Clicker.View
 {
-    public class ClickerView : MonoBehaviour, IPointerClickHandler
+    public class ClickerView : BaseScreen, IPointerClickHandler
     {
         public event Action OnClicked;
 
@@ -20,16 +21,6 @@ namespace ClickerTest.MVP.Clicker.View
         public void OnPointerClick(PointerEventData eventData)
         {
             OnClicked?.Invoke();
-        }
-
-        public void Open()
-        {
-            
-        }
-
-        public void Close()
-        {
-            
         }
     }
 }

@@ -1,66 +1,62 @@
-using System;
-using Cysharp.Threading.Tasks;
+using ClickerTest.Data;
+using ClickerTest.MVP.Header.Model;
+using ClickerTest.Tools.Reactivity;
+using ClickerTest.UI;
 using UnityEngine;
 
 namespace ClickerTest.MVP.Clicker.Model
 {
-    public class ClickerModel
+    public class ClickerModel : IScreenModel
     {
-        public event Action<bool> OnDisplayingChanged;
+        public int ScreenId => 2;
+        
+        public SimpleReativeProperty<bool> DisplayingStatus { get; set; }
 
-        public event Action<int> OnClickCountChanged;
-        public event Action<int> OnPointsPerClickChanged;
-        public event Action<int> OnLevelChanged;
-        public event Action<int> OnLevelUpRequirementChanged;
-        public event Action<int> OnClicksBeforeLevelUpChanged;
+        public float ProgressIndex => 1 - (float)ClicksBeforeLevelUp.Value / LevelUpRequirement.Value;
 
-        public bool DisplayingStatus { get; set; }
+        public SimpleReativeProperty<int> ClicksCount { get; }
+        public SimpleReativeProperty<int> PointsPerClick { get; }
+        public SimpleReativeProperty<int> Level { get; }
+        public SimpleReativeProperty<int> LevelUpRequirement { get;  }
+        public SimpleReativeProperty<int> ClicksBeforeLevelUp { get; }
 
-        public int Points { get; private set; }
-        public int ClicksCount { get; private set; }
-        public int PointsPerClick { get; private set; }
-        public int Level { get; private set; }
-        public int LevelUpRequirement { get; private set; }
-        public int ClicksBeforeLevelUp { get; private set; }
-
-        public ClickerModel()
+        private readonly HeaderModel _resourcesModel;
+        private readonly IPersistentDataService _dataService;
+        
+        public ClickerModel(HeaderModel headerModel, IPersistentDataService dataService)
         {
-            //TODO проверка сохранений
+            _resourcesModel = headerModel;
+            _dataService = dataService;
 
-            Points = 0;
-            ClicksCount = 0;
-            PointsPerClick = 1;
-            Level = 1;
-            LevelUpRequirement = 10;
-            ClicksBeforeLevelUp = LevelUpRequirement;
-        }
+            var data = _dataService.Progress;
+            
+            DisplayingStatus = new SimpleReativeProperty<bool>(false);
 
-        public void ChangeDisplayingStatus(bool status)
-        {
-            DisplayingStatus = status;
+            ClicksCount = new SimpleReativeProperty<int>(data.ClickCount);
+            PointsPerClick = new SimpleReativeProperty<int>(data.PointsPerClick);
+            Level = new SimpleReativeProperty<int>(data.Level);
+            LevelUpRequirement = new SimpleReativeProperty<int>(data.LevelUpRequirement);
+            ClicksBeforeLevelUp = new SimpleReativeProperty<int>(data.ClicksBeforeLevelUp);
 
-            OnDisplayingChanged?.Invoke(status);
+            _dataService.OnNeedSaving += SaveData;
         }
 
         public void ConfirmClick()
         {
-            Debug.Log("КЛИК!");
+            _resourcesModel.Points.Value += PointsPerClick.Value;
 
-            Points += PointsPerClick;
-            ClicksCount++;
-            ClicksBeforeLevelUp--;
+            ClicksCount.Value++;
+            ClicksBeforeLevelUp.Value -= PointsPerClick.Value;
 
-            if (ClicksBeforeLevelUp == 0)
+            if (ClicksBeforeLevelUp.Value <= 0)
             {
-                Level++;
-                LevelUpRequirement *= 2;
-                ClicksBeforeLevelUp = LevelUpRequirement;
-                
-                OnLevelChanged?.Invoke(Level);
+                Level.Value++;
+                LevelUpRequirement.Value *= 2;
+
+                var overPoints = Mathf.Abs(ClicksBeforeLevelUp.Value);
+                ClicksBeforeLevelUp.Value = LevelUpRequirement.Value;
+                ClicksBeforeLevelUp.Value -= overPoints;
             }
-            
-            OnClickCountChanged?.Invoke(ClicksCount);
-            OnClicksBeforeLevelUpChanged?.Invoke(ClicksBeforeLevelUp);
         }
 
         /// <summary>
@@ -68,7 +64,27 @@ namespace ClickerTest.MVP.Clicker.Model
         /// </summary>
         public void UpgradePointsPerClick(int value)
         {
-            PointsPerClick += value;
+            PointsPerClick.Value += value;
+        }
+
+        public bool TryUpgradePointPerClick(int price, int bonus)
+        {
+            if (_resourcesModel.TrySpendPoints(price))
+            {
+                PointsPerClick.Value += bonus;
+                return true;
+            }
+
+            return false;
+        }
+
+        public void SaveData()
+        {
+            _dataService.Progress.Level = Level.Value;
+            _dataService.Progress.ClickCount = ClicksCount.Value;
+            _dataService.Progress.PointsPerClick = PointsPerClick.Value;
+            _dataService.Progress.LevelUpRequirement = LevelUpRequirement.Value;
+            _dataService.Progress.ClicksBeforeLevelUp = ClicksBeforeLevelUp.Value;
         }
     }
 }

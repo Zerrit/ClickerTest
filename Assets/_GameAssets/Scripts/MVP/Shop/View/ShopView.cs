@@ -1,21 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using ClickerTest.UI;
+using TMPro;
 using UnityEngine;
 
-namespace ClickerTest
+namespace ClickerTest.MVP.Shop.View
 {
-    public class ShopView : MonoBehaviour
+    public class ShopView : BaseScreen
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+        [field:SerializeField] public TextMeshProUGUI Title { get; private set; }
+        [field:SerializeField] public Transform ProductsParent { get; private set; }
+        [field:SerializeField] public UpgradePanelView UpgradePopup { get; private set; }
     }
 }

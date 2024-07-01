@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using ClickerTest.Factories;
+using ClickerTest.Factories.ClickPopup;
 using ClickerTest.MVP.Clicker.View;
 using Cysharp.Threading.Tasks;
 

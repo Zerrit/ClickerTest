@@ -1,21 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-namespace ClickerTest
+namespace ClickerTest.MVP.Shop.View
 {
-    public class UpgradeView : MonoBehaviour
+    public class UpgradeView : MonoBehaviour, IPointerClickHandler
     {
-        // Start is called before the first frame update
-        void Start()
-        {
+        public event Action<UpgradeView> OnClicked;
         
-        }
+        public int UpgradeId { get; set; }
+        
+        [field:SerializeField] public TextMeshProUGUI Title { get; private set; }
 
-        // Update is called once per frame
-        void Update()
+        public void OnPointerClick(PointerEventData eventData)
         {
-        
+            OnClicked?.Invoke(this);
         }
     }
 }

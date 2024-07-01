@@ -18,7 +18,6 @@ namespace ClickerTest.MVP.TabsPanel.View
         public void OnPointerClick(PointerEventData eventData)
         {
             OnClicked?.Invoke(OrderId);
-            Debug.Log(OrderId);
         }
     }
 }

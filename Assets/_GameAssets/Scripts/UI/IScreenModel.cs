@@ -6,6 +6,6 @@ namespace ClickerTest.UI
     {
         int ScreenId { get; }
 
-        SimpleReativeProperty<bool> DisplayingStatus { get; set; }
+        SimpleReativeProperty<bool> DisplayingStatus { get; }
     }
 }

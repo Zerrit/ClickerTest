@@ -8,9 +8,10 @@ namespace ClickerTest.MVP.Clicker.Model
 {
     public class ClickerModel : IScreenModel
     {
+        public bool IsInitialized { get; set; }
         public int ScreenId => 2;
-        
-        public SimpleReativeProperty<bool> DisplayingStatus { get; set; }
+
+        public SimpleReativeProperty<bool> DisplayingStatus { get; }
 
         public float ProgressIndex => 1 - (float)ClicksBeforeLevelUp.Value / LevelUpRequirement.Value;
 
@@ -22,14 +23,14 @@ namespace ClickerTest.MVP.Clicker.Model
 
         private readonly HeaderModel _resourcesModel;
         private readonly IPersistentDataService _dataService;
-        
+
         public ClickerModel(HeaderModel headerModel, IPersistentDataService dataService)
         {
             _resourcesModel = headerModel;
             _dataService = dataService;
 
             var data = _dataService.Progress;
-            
+
             DisplayingStatus = new SimpleReativeProperty<bool>(false);
 
             ClicksCount = new SimpleReativeProperty<int>(data.ClickCount);

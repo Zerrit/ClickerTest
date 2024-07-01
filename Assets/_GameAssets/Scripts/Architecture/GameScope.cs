@@ -38,7 +38,6 @@ namespace ClickerTest.Architecture
 
         protected override void Configure(IContainerBuilder builder)
         {
-            Debug.Log("sdgbedrbr");
             RegisterConfigs(builder);
             RegisterFactories(builder);
 
@@ -51,7 +50,7 @@ namespace ClickerTest.Architecture
         {
             builder.RegisterComponent(_upgradeListConfig);
         }
-        
+
         private void RegisterModels(IContainerBuilder builder)
         {
             builder.Register<HeaderModel>(Lifetime.Singleton);

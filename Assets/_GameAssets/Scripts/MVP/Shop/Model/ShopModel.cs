@@ -1,20 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using ClickerTest.Configs;
 using ClickerTest.Data;
 using ClickerTest.MVP.Clicker.Model;
 using ClickerTest.Tools.Reactivity;
 using ClickerTest.UI;
-using UnityEngine;
 
 namespace ClickerTest.MVP.Shop.Model
 {
     public class ShopModel : IScreenModel
     {
+        public bool IsInitialized { get; set; }
         public int ScreenId => 1;
 
-        public SimpleReativeProperty<bool> DisplayingStatus { get; set; }
+        public SimpleReativeProperty<bool> DisplayingStatus { get; }
 
         public Dictionary<int, UpgradeConfig> AvailableUpgrades { get; }
 
@@ -25,7 +24,7 @@ namespace ClickerTest.MVP.Shop.Model
         {
             _clickerModel = clickerModel;
             _dataService = dataService;
-            
+
             DisplayingStatus = new SimpleReativeProperty<bool>(false);
             AvailableUpgrades = new Dictionary<int, UpgradeConfig>();
 
@@ -44,7 +43,7 @@ namespace ClickerTest.MVP.Shop.Model
             {
                 throw new Exception($"Попытка приобрести усиление с неопознанным Id:{upgradeId}");
             }
-            
+
             if (_clickerModel.TryUpgradePointPerClick(AvailableUpgrades[upgradeId].Price, AvailableUpgrades[upgradeId].Bonus))
             {
                 _dataService.Progress.PurchaisedUpgrades.Add(upgradeId);

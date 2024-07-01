@@ -11,7 +11,7 @@ namespace ClickerTest.MVP.Clicker.View
     {
         public event Action OnClicked;
 
-        public Vector2 PopupSpawnZoneSize => PopupSpawnZone.sizeDelta;
+        public RectTransform PopupSpawnZoneSize => PopupSpawnZone;
 
         [field:SerializeField] public Slider LevelSlider { get; private set; }
         [field:SerializeField] public TextMeshProUGUI LevelText { get; private set; }

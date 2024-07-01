@@ -10,13 +10,13 @@ using Object = UnityEngine.Object;
 
 namespace ClickerTest.MVP.Shop.Presenter
 {
-    public class ShopPresenter : IAsyncStartable, IDisposable
+    public class ShopPresenter : IStartable, IDisposable
     {
         private UpgradeView _selectedUpgradeView;
 
         private List<UpgradeView> _upgradeViews;
         private CancellationTokenSource _cts;
-        
+
         private readonly ShopModel _model;
         private readonly ShopView _view;
         private readonly IUpgradeViewFactory _factory;
@@ -28,12 +28,7 @@ namespace ClickerTest.MVP.Shop.Presenter
             _factory = factory;
         }
 
-        public async UniTask StartAsync(CancellationToken cancellation)
-        {
-            Initialize();
-        }
-
-        private void Initialize()
+        public void Start()
         {
             _upgradeViews = new();
             _cts = new CancellationTokenSource();
@@ -41,6 +36,8 @@ namespace ClickerTest.MVP.Shop.Presenter
             _model.DisplayingStatus.OnChanged += UpdateDisplaying;
             _view.UpgradePopup.BuyButton.onClick.AddListener(BuyUpgrade);
             _view.UpgradePopup.CloseButton.onClick.AddListener(HideUpgradePopup);
+
+            _model.IsInitialized = true;
         }
 
         private void UpdateDisplaying(bool newStatus)
@@ -70,7 +67,7 @@ namespace ClickerTest.MVP.Shop.Presenter
             {
                 var view = await _factory.Create(_view.ProductsParent, _cts.Token);
                 _upgradeViews.Add(view);
-                
+
                 view.UpgradeId = upgrade.Id;
                 view.Title.text = upgrade.Title;
 
@@ -127,7 +124,7 @@ namespace ClickerTest.MVP.Shop.Presenter
         public void Dispose()
         {
             _model.DisplayingStatus.OnChanged -= UpdateDisplaying;
-            
+
             _cts?.Dispose();
         }
     }

@@ -1,6 +1,5 @@
 ﻿using ClickerTest.Data;
 using ClickerTest.Tools.Reactivity;
-using UnityEngine;
 
 namespace ClickerTest.MVP.Header.Model
 {
@@ -23,19 +22,15 @@ namespace ClickerTest.MVP.Header.Model
         {
             if (Points.Value >= amount)
             {
-                Debug.Log(Points.Value);
-                Debug.Log(amount);
-                
                 Points.Value -= amount;
                 return true;
             }
             return false;
         }
-        
+
         public void SaveData()
         {
             _dataService.Progress.Points = Points.Value;
-
         }
     }
 }
